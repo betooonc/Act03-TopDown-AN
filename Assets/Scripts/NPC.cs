@@ -10,7 +10,7 @@ public class NPC : MonoBehaviour {
 
     [Header("Detections")]
     [SerializeField] private float detectionRadius;
-    [SerializeField] private LayerMask whatIsObstacle;
+    [SerializeField] private LayerMask isObstacle;
 
     private Vector3 targetPosition;
     private Vector3 startPosition;
@@ -41,13 +41,20 @@ public class NPC : MonoBehaviour {
             Vector3.left,
             Vector3.right
         };
+        bool isWalkable = false;
+        while (!isWalkable) {
+            int randomDirection = Random.Range(0, directions.Length);
+            targetPosition = transform.position + directions[randomDirection];
+
+            isWalkable = TileIsWalkable();
+        } 
     }
 
     private bool TileIsWalkable() {
         if (Vector3.Distance(targetPosition, startPosition) > maxDistance) {
             return false;
         } else {
-            return !Physics2D.OverlapCircle(targetPosition, detectionRadius, whatIsObstacle);
+            return !Physics2D.OverlapCircle(targetPosition, detectionRadius, isObstacle);
         }
     }
 
